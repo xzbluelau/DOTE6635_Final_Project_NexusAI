@@ -42,9 +42,13 @@ def load_test_data():
 
 
 def load_test_47():
-    """Load test data with order_hour added (47 features)."""
+    """Load test data with order_hour added (47 features).
+
+    order_hour was inserted after order_dayofweek (index 15),
+    so we insert a zero column at index 16, NOT append at the end.
+    """
     X, y = load_test_data()
-    X = np.hstack([X, np.zeros((X.shape[0], 1), dtype=np.float32)])
+    X = np.insert(X, 16, 0, axis=1).astype(np.float32)
     return X, y
 
 

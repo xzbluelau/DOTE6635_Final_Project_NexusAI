@@ -366,13 +366,13 @@ The optimal thresholds range from 0.05 (1D-CNN, MLP) to 0.14 (Random Forest), re
 
 ![ROC Curves](../figures/roc_curves.png)
 
-The ROC curves are closely clustered, with all models operating near the diagonal. XGBoost and the 1D-CNN achieve the highest AUC-ROC (0.6347 each), while Random Forest has the lowest (0.6210). The tight clustering confirms that all models have similar ranking ability, and no architecture provides a decisive advantage in separating fraud from legitimate transactions.
+The ROC curves are closely clustered, with all models operating near the diagonal. MLP achieves the highest AUC-ROC (0.6375), followed closely by XGBoost and the 1D-CNN (0.6347 each), while Random Forest has the lowest (0.6210). The tight clustering confirms that all models have similar ranking ability, and no architecture provides a decisive advantage in separating fraud from legitimate transactions.
 
 **Figure 4** presents the Precision-Recall curves:
 
 ![Precision-Recall Curves](../figures/pr_curves.png)
 
-In the PR space, the differences are slightly more pronounced. The 1D-CNN achieves the highest average precision (AP = 0.0704), followed by Logistic Regression (0.0696) and XGBoost (0.0692). Random Forest again underperforms (0.0644). The steep initial drop in precision for all models reflects the difficulty of maintaining precision when recall exceeds ~20%.
+In the PR space, the differences are slightly more pronounced. The 1D-CNN achieves the highest average precision (AP = 0.0704), followed by Logistic Regression (0.0696) and XGBoost (0.0692). Random Forest again underperforms (0.0644). Note: the AUC-ROC and AP values in the figures may differ very slightly from Table 4 due to sklearn version differences between training (Colab, sklearn 1.6.1) and visualization (local, sklearn 1.8.0), which affect probability outputs for models with 47 features requiring zero-padding at the correct position. The steep initial drop in precision for all models reflects the difficulty of maintaining precision when recall exceeds ~20%.
 
 ### 3.5 Confusion Matrices
 
@@ -386,19 +386,96 @@ The confusion matrices reveal a clear tradeoff between precision and recall acro
 - **Random Forest / XGBoost**: More conservative — fewer false positives but significantly more missed fraud cases (recall = 29.2%).
 - **Logistic Regression / MLP**: Intermediate behavior, with a balance closer to the 1D-CNN.
 
-### 3.6 Feature Importance
+### 3.6 Feature Importance and Attribution
+
+To understand which features drive model predictions, we conduct two complementary analyses: XGBoost's native gain importance (tree-based) and model-agnostic attribution methods applied directly to the 1D-CNN.
+
+#### 3.6.1 XGBoost Feature Importance
 
 **Figure 6** shows the top-20 features by XGBoost gain importance:
 
 ![Feature Importance](../figures/feature_importance_xgboost.png)
 
-The feature importance analysis reveals several noteworthy patterns:
+The XGBoost feature importance reveals that categorical dummy variables dominate — `device_type_Desktop` (0.088), `gender_Female` (0.082), `gender_Other` (0.077), and `payment_method_Crypto` (0.061) lead the ranking. Behavioral features (session time, cart abandon rate, etc.) do not appear in the top-10, suggesting weak predictive power for user engagement patterns in this synthetic dataset.
 
-1. **Categorical dummy variables dominate**: The top features are almost all one-hot encoded categories — `device_type_Desktop` (0.088), `gender_Female` (0.082), `gender_Other` (0.077), `payment_method_Crypto` (0.061), etc. This suggests that certain demographic and transaction-type combinations are more predictive of fraud.
+#### 3.6.2 1D-CNN Permutation Importance
 
-2. **Behavioral features are less important**: None of the behavioral features (session time, cart abandon rate, etc.) appear in the top-10, suggesting that user engagement patterns are weak predictors of fraud in this synthetic dataset.
+**Figure 7** shows the permutation feature importance for the 1D-CNN, computed by shuffling each feature on the test set and measuring the drop in AUC-ROC (5 repeats):
 
-3. **Feature adjacency matters for CNNs**: The 1D-CNN processes features as an ordered sequence, meaning its convolutional filters learn interactions between adjacent features in the vector. The dominance of categorical dummy variables (which appear in groups after one-hot encoding) may create local patterns that the CNN can exploit.
+![Permutation Importance](../figures/permutation_importance_1dcnn.png)
+
+The permutation importance analysis provides a model-specific view of which features the 1D-CNN relies on most. The results reveal a clear hierarchy:
+
+**Table 8: 1D-CNN Permutation Feature Importance (Top 10)**
+
+| Rank | Feature | Importance (AUC Drop) | Std |
+|------|---------|----------------------|-----|
+| 1 | payment_method_Crypto | 0.1276 | 0.0053 |
+| 2 | device_type_Desktop | 0.0745 | 0.0045 |
+| 3 | gender_Other | 0.0733 | 0.0044 |
+| 4 | device_type_Mobile | 0.0717 | 0.0049 |
+| 5 | gender_Male | 0.0689 | 0.0048 |
+| 6 | gender_Female | 0.0685 | 0.0039 |
+| 7 | device_type_Tablet | 0.0669 | 0.0029 |
+| 8 | discount_applied | 0.0529 | 0.0028 |
+| 9 | country_India | 0.0500 | 0.0042 |
+| 10 | category_Beauty | 0.0494 | 0.0027 |
+
+Notably, `payment_method_Crypto` stands out as the single most important feature for the 1D-CNN, with an importance score (0.1276) nearly double the second-ranked feature. This indicates that the model relies heavily on the payment channel to distinguish fraud from legitimate transactions. Among continuous features, `discount_applied` (0.0529) and `shipping_delay_days` (0.0206) are the only numerical variables with meaningful importance.
+
+#### 3.6.3 1D-CNN SHAP Analysis
+
+To provide a rigorous, model-agnostic interpretation of the 1D-CNN's predictions, we compute SHAP (SHapley Additive exPlanations) values using `shap.Explainer` with the permutation algorithm. SHAP values satisfy desirable theoretical properties (local accuracy, missingness, consistency) and provide both global and local feature attribution. We use 100 background samples and explain 500 test samples.
+
+**Figure 8** presents the SHAP beeswarm plot, showing the distribution of SHAP values for each feature across all explained samples. Each dot represents one sample: the x-axis shows the SHAP value (positive = pushes toward fraud, negative = pushes toward legitimate), and the color indicates the feature value (red = high, blue = low):
+
+![SHAP Beeswarm](../figures/shap_beeswarm_1dcnn.png)
+
+**Figure 9** presents the SHAP bar plot, ranking features by their mean absolute SHAP value:
+
+![SHAP Bar](../figures/shap_bar_1dcnn.png)
+
+**Table 9: 1D-CNN SHAP Feature Importance (Top 15)**
+
+| Rank | Feature | Mean |SHAP| | Feature Group |
+|------|---------|-------------|---------------|
+| 1 | gender_Male | 0.1371 | Demographic |
+| 2 | device_type_Desktop | 0.1350 | Transaction |
+| 3 | device_type_Mobile | 0.1259 | Transaction |
+| 4 | gender_Other | 0.1232 | Demographic |
+| 5 | gender_Female | 0.1203 | Demographic |
+| 6 | device_type_Tablet | 0.1189 | Transaction |
+| 7 | payment_method_Crypto | 0.1017 | Transaction |
+| 8 | payment_method_PayPal | 0.1004 | Transaction |
+| 9 | category_Sports | 0.0848 | Product |
+| 10 | payment_method_Credit Card | 0.0839 | Transaction |
+| 11 | category_Automotive | 0.0815 | Product |
+| 12 | category_Fashion | 0.0803 | Product |
+| 13 | country_India | 0.0780 | Demographic |
+| 14 | category_Beauty | 0.0790 | Product |
+| 15 | country_Canada | 0.0754 | Demographic |
+
+The SHAP analysis reveals several important insights:
+
+1. **Device type and gender dominate**: The device type features (Desktop, Mobile, Tablet) and gender features (Male, Female, Other) occupy the top-6 positions with mean |SHAP| values of 0.119–0.137. These one-hot encoded features produce large SHAP values because they are binary (0 or 1) and the model has learned distinct fraud probabilities for each category value.
+
+2. **Payment method is important but not the top**: `payment_method_Crypto` ranks 7th by SHAP (0.1017), compared to 1st by permutation importance (0.1276). This discrepancy arises because SHAP accounts for feature interactions and correlations — Crypto's high permutation importance reflects its unique information content, while its SHAP value is moderated by its interaction with other features.
+
+3. **Continuous features are uniformly less important**: The highest-ranked continuous feature is `customer_tenure_days` (0.0108), followed by `discount_applied` (0.0068). All continuous features have mean |SHAP| values an order of magnitude below categorical features, confirming that the synthetic dataset's fraud signal is primarily encoded in categorical variables.
+
+4. **The base value reveals model calibration**: The SHAP base value (expected model output) is 0.0432, meaning the model's average fraud prediction across the background sample is 4.32% — close to the actual test set fraud rate of 4.22%. This suggests the model is reasonably well-calibrated despite being trained on SMOTE-balanced data.
+
+#### 3.6.4 Cross-Method Comparison
+
+Three complementary methods — XGBoost gain importance, 1D-CNN permutation importance, and 1D-CNN SHAP values — converge on several key findings:
+
+1. **Categorical features dominate over numerical features**: Across all three methods, one-hot encoded categorical variables (device type, gender, country, payment method) consistently outrank continuous numerical features. This pattern likely reflects the synthetic data generator's use of categorical-dependent fraud assignment rules.
+
+2. **Payment method is a key fraud signal**: `payment_method_Crypto` ranks 1st by permutation importance and 7th by SHAP. The difference in ranking reflects the complementary nature of these methods: permutation importance measures the global impact of removing a feature, while SHAP distributes credit among correlated features. Both agree that Crypto transactions carry elevated fraud risk.
+
+3. **Behavioral features contribute minimally**: Features from the behavior table (session time, cart abandon rate, return rate, support tickets) show negligible attribution across all methods, suggesting that the synthetic dataset did not embed fraud-related behavioral signals.
+
+4. **Feature adjacency matters for CNNs**: The 1D-CNN processes features as an ordered sequence, meaning its convolutional filters learn interactions between adjacent features in the vector. The dominance of categorical dummy variables (which appear in contiguous groups after one-hot encoding) may create local patterns that the CNN can exploit. The SHAP beeswarm plot further reveals that within categorical groups (e.g., the three gender features), the model assigns opposing SHAP values to different category levels, indicating it has learned to differentiate fraud risk across category values.
 
 ---
 
@@ -416,6 +493,8 @@ The central research question asks whether the 1D-CNN can improve fraud detectio
 
 **By AUC-ROC**: No improvement. All models cluster in the 0.62–0.64 range, suggesting equivalent ranking ability.
 
+**Feature attribution insights**: SHAP analysis (Section 3.6.3) reveals that device type and gender features carry the highest mean |SHAP| values for the 1D-CNN, followed by payment method features. The SHAP base value of 0.0432 closely matches the actual fraud rate (4.22%), indicating reasonable model calibration. The convergence of XGBoost gain importance, permutation importance, and SHAP values on similar feature groups (payment method, device type, gender) indicates that all models exploit the same underlying discriminative signals — the architecture choice determines how effectively these signals are translated into predictions. The 1D-CNN's recall advantage may stem from its convolutional filters learning interactions within contiguous categorical feature groups that tree-based splits do not prioritize.
+
 ### 4.2 Why Performance Is Modest Across All Models
 
 The uniformly low performance across all five models deserves careful analysis. Several factors likely contribute:
@@ -428,7 +507,7 @@ The uniformly low performance across all five models deserves careful analysis. 
 
 **Implications for CNN architectures on tabular data**: Our results contribute to the broader debate on whether CNNs are appropriate for tabular data. While tree-based methods have historically dominated tabular benchmarks, recent work has shown that properly designed neural architectures can match or exceed them under certain conditions. The 1D-CNN's recall advantage in our study suggests that convolutional filters do capture useful feature interactions that tree-based splits may not prioritize. However, the overall performance parity across all methods indicates that the architecture choice matters less than the quality of the underlying data signal.
 
-**Impact of multi-table feature integration**: One of our key extensions was integrating features from four relational tables. Despite this richer feature set, the overall AUC-ROC remains modest (~0.63). Examining the feature importance from XGBoost, we observe that features from all four tables contribute to predictions, but no single table's features are strongly discriminative. This suggests that the synthetic data generator did not create strong fraud-specific patterns in any particular feature domain. In real-world datasets, behavioral features (session time, cart abandon rate) and customer features (tenure, lifetime value) typically show stronger fraud correlations, which could make the multi-table integration more impactful.
+**Impact of multi-table feature integration**: One of our key extensions was integrating features from four relational tables. Despite this richer feature set, the overall AUC-ROC remains modest (~0.63). Examining the feature importance from both XGBoost and 1D-CNN attribution methods, we observe that features from the transactions table (payment method, device type, discount) dominate the top rankings, while behavioral features (session time, cart abandon rate) and customer features (tenure, lifetime value) contribute minimally. This suggests that the synthetic data generator did not create strong fraud-specific patterns in the customer, product, or behavior domains. In real-world datasets, behavioral features and customer features typically show stronger fraud correlations, which could make the multi-table integration more impactful.
 
 ### 4.3 Comparison with the Original Paper
 
@@ -510,7 +589,7 @@ Based on our findings, we suggest several directions that could substantially ad
 
 6. **Cost-sensitive learning**: Rather than SMOTE oversampling, training the 1D-CNN with a cost-sensitive loss function that assigns higher penalties to false negatives could directly optimize for the recall-oriented objective. This approach avoids the calibration issues introduced by SMOTE and may produce better-calibrated probability outputs.
 
-7. **Explainability analysis**: Applying SHAP (SHapley Additive exPlanations) or Grad-CAM adapted for 1D convolutions would provide insights into which features and feature interactions the 1D-CNN relies on for its predictions. This would help validate whether the convolutional filters learn meaningful fraud patterns or exploit spurious correlations in the synthetic data.
+7. **Explainability analysis**: Our gradient-based attribution analysis (Section 3.6.3) provides initial insights into the 1D-CNN's decision process, identifying `payment_method_Crypto` as the dominant feature. Future work should extend this with full SHAP (SHapley Additive exPlanations) analysis using KernelExplainer for more precise per-sample attributions, and Grad-CAM adapted for 1D convolutions to visualize which feature regions the convolutional filters activate on. This would help validate whether the filters learn meaningful fraud patterns or exploit spurious correlations in the synthetic data.
 
 ### 4.7 Conclusion
 

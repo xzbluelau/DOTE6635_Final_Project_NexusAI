@@ -1,0 +1,241 @@
+{
+  "permutation_importance": {
+    "order_value": {
+      "importance": -0.0004942498699535891,
+      "std": 0.0011195470870458105
+    },
+    "discount_applied": {
+      "importance": 0.0529459079930348,
+      "std": 0.002799695444460606
+    },
+    "shipping_delay_days": {
+      "importance": 0.020615387245432458,
+      "std": 0.0038025995033367124
+    },
+    "age": {
+      "importance": -0.0008447281723403588,
+      "std": 0.0009002972355339211
+    },
+    "loyalty_score": {
+      "importance": -0.0015019452022009493,
+      "std": 0.0006259504973582899
+    },
+    "lifetime_value": {
+      "importance": 0.0002611137839493738,
+      "std": 0.0014669005547056054
+    },
+    "price": {
+      "importance": -0.0012012044867865778,
+      "std": 0.0014069249532704484
+    },
+    "margin_percentage": {
+      "importance": 0.00024104388854826465,
+      "std": 0.0023390682132402927
+    },
+    "popularity_score": {
+      "importance": -0.0009023491399837713,
+      "std": 0.0011432286481574785
+    },
+    "avg_session_time": {
+      "importance": -0.0005676620208123762,
+      "std": 0.001398917099662607
+    },
+    "pages_per_session": {
+      "importance": 5.523250844379213e-05,
+      "std": 0.0005067020789768814
+    },
+    "cart_abandon_rate": {
+      "importance": -0.0014297394918785678,
+      "std": 0.0010162756130247873
+    },
+    "return_rate": {
+      "importance": 0.0007438560672479611,
+      "std": 0.000753233168584284
+    },
+    "support_tickets": {
+      "importance": 0.0008321216013910115,
+      "std": 0.0014809295772275236
+    },
+    "review_score": {
+      "importance": 0.0004521856355425236,
+      "std": 0.0007837906602116012
+    },
+    "order_hour": {
+      "importance": 0.0,
+      "std": 0.0
+    },
+    "order_dayofweek": {
+      "importance": 0.0008239940019879155,
+      "std": 0.0011819676222959141
+    },
+    "order_month": {
+      "importance": -0.003043590601486401,
+      "std": 0.0014066448485974712
+    },
+    "order_is_weekend": {
+      "importance": 0.0007534294415449505,
+      "std": 0.0005279922216817606
+    },
+    "customer_tenure_days": {
+      "importance": 0.00106456899057068,
+      "std": 0.001521085683170303
+    },
+    "payment_method_Credit Card": {
+      "importance": 0.04119597820592027,
+      "std": 0.004425337082415225
+    },
+    "payment_method_Crypto": {
+      "importance": 0.12760528880086155,
+      "std": 0.005305353512185589
+    },
+    "payment_method_Debit Card": {
+      "importance": 0.04629848901870463,
+      "std": 0.00304933193091189
+    },
+    "payment_method_PayPal": {
+      "importance": 0.04448414898319526,
+      "std": 0.005012583931126018
+    },
+    "payment_method_UPI": {
+      "importance": 0.047659270909397256,
+      "std": 0.00888008233685349
+    },
+    "device_type_Desktop": {
+      "importance": 0.07453169348595372,
+      "std": 0.004473624074502173
+    },
+    "device_type_Mobile": {
+      "importance": 0.07165926114064798,
+      "std": 0.004920583746596114
+    },
+    "device_type_Tablet": {
+      "importance": 0.06693863027481924,
+      "std": 0.0029232260603581834
+    },
+    "gender_Female": {
+      "importance": 0.06850308081930494,
+      "std": 0.003927722493105649
+    },
+    "gender_Male": {
+      "importance": 0.0689261213913629,
+      "std": 0.004792482958454446
+    },
+    "gender_Other": {
+      "importance": 0.07332286937472669,
+      "std": 0.004387450311988769
+    },
+    "country_Australia": {
+      "importance": 0.03312349897061795,
+      "std": 0.0016299850285662976
+    },
+    "country_Brazil": {
+      "importance": 0.04472683890599771,
+      "std": 0.005847472545459911
+    },
+    "country_Canada": {
+      "importance": 0.046049254033882825,
+      "std": 0.0054832215258006235
+    },
+    "country_France": {
+      "importance": 0.0369414925183591,
+      "std": 0.0011586553964018195
+    },
+    "country_Germany": {
+      "importance": 0.035818037507112786,
+      "std": 0.0044863304778334145
+    },
+    "country_India": {
+      "importance": 0.04997611052362931,
+      "std": 0.004213715446297346
+    },
+    "country_UK": {
+      "importance": 0.04035336496779971,
+      "std": 0.00466268394552094
+    },
+    "country_USA": {
+      "importance": 0.048048809555790516,
+      "std": 0.002448577390617685
+    },
+    "category_Automotive": {
+      "importance": 0.043697276228481206,
+      "std": 0.006154666783068682
+    },
+    "category_Beauty": {
+      "importance": 0.04937724711760834,
+      "std": 0.002658231214127707
+    },
+    "category_Books": {
+      "importance": 0.03528265143393024,
+      "std": 0.0031740461767490323
+    },
+    "category_Electronics": {
+      "importance": 0.030502123481875264,
+      "std": 0.0027272601473924646
+    },
+    "category_Fashion": {
+      "importance": 0.04415482979175465,
+      "std": 0.0019901337970744948
+    },
+    "category_Home & Kitchen": {
+      "importance": 0.037383928942117686,
+      "std": 0.003874598883435099
+    },
+    "category_Sports": {
+      "importance": 0.04351910401031574,
+      "std": 0.004052397841946148
+    },
+    "category_Toys": {
+      "importance": 0.04498918843673139,
+      "std": 0.0031243136951931583
+    }
+  },
+  "gradient_attribution_mean_abs": {
+    "order_value": 0.0028825579211115837,
+    "discount_applied": 0.008282087743282318,
+    "shipping_delay_days": 0.0062582120299339294,
+    "age": 0.003791240742430091,
+    "loyalty_score": 0.002858309308066964,
+    "lifetime_value": 0.003108036005869508,
+    "price": 0.0028765182942152023,
+    "margin_percentage": 0.0032251300290226936,
+    "popularity_score": 0.0029236332047730684,
+    "avg_session_time": 0.003410023171454668,
+    "pages_per_session": 0.0027294722385704517,
+    "cart_abandon_rate": 0.002826137002557516,
+    "return_rate": 0.0020188516937196255,
+    "support_tickets": 0.002909264760091901,
+    "review_score": 0.0027469319757074118,
+    "order_hour": 0.0,
+    "order_dayofweek": 0.0059355259872972965,
+    "order_month": 0.007363618817180395,
+    "order_is_weekend": 0.0008743935613892972,
+    "customer_tenure_days": 0.0036232799757272005,
+    "payment_method_Credit Card": 0.0035487432032823563,
+    "payment_method_Crypto": 0.00939415954053402,
+    "payment_method_Debit Card": 0.0026271629612892866,
+    "payment_method_PayPal": 0.002814090345054865,
+    "payment_method_UPI": 0.002657907549291849,
+    "device_type_Desktop": 0.005488074384629726,
+    "device_type_Mobile": 0.00666660163551569,
+    "device_type_Tablet": 0.005749046802520752,
+    "gender_Female": 0.006795146036893129,
+    "gender_Male": 0.00602330919355154,
+    "gender_Other": 0.005679433699697256,
+    "country_Australia": 0.002350479830056429,
+    "country_Brazil": 0.0017363899387419224,
+    "country_Canada": 0.0024884974118322134,
+    "country_France": 0.0021262927912175655,
+    "country_Germany": 0.002367962384596467,
+    "country_India": 0.0035596920643001795,
+    "country_UK": 0.002301580272614956,
+    "country_USA": 0.003498488338664174,
+    "category_Automotive": 0.0030725521501153708,
+    "category_Beauty": 0.0026280111633241177,
+    "category_Books": 0.0027769708540290594,
+    "category_Electronics": 0.0026383737567812204,
+    "category_Fashion": 0.0022520043421536684,
+    "category_Home & Kitchen": 0.0023281255271285772,
+    "category_Sports": 0.0022283464204519987,
+    "category_Toys": 0.0038260093424469233
+  }
+}
