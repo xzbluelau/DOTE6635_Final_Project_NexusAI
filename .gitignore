@@ -1,0 +1,23 @@
+# Data (download from Kaggle - see README)
+work/data/raw/
+work/data/processed/
+
+# Trained models (regeneratable from code)
+work/models/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Environment
+.env
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
