@@ -1,0 +1,2 @@
+model_scope,feature_set,model,candidate_id,threshold,test_fraud_rate_baseline,PR_AUC,PR_AUC_lift_over_fraud_base_rate,ROC_AUC,precision_at_threshold,recall_at_threshold,F1_at_threshold
+final_validation_selected_model,transaction_only,Logistic Regression,4,0.5724730640080611,0.041633333333333335,0.0701928738206283,1.6859777538981977,0.6340276979679114,0.07658505963590709,0.2930344275420336,0.12143331121433311

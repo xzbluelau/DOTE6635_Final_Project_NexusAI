@@ -1,0 +1,6 @@
+metric,value
+number_of_flagged_transactions,4779.0
+flagged_transaction_rate,0.1593
+fraud_cases_among_flagged,366.0
+precision_among_flagged,0.07658505963590709
+share_of_all_test_fraud_captured,0.2930344275420336

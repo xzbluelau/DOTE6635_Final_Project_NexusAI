@@ -1,0 +1,56 @@
+You are assisting a fraud-risk analyst for an enterprise e-commerce platform.
+
+Task:
+Write a concise, human-readable transaction risk report based only on the structured information below. Do not claim that the transaction is definitely fraudulent. Treat the model output as decision support, not as a final decision.
+
+Model output:
+- Fraud risk score: 0.7741
+- Operating threshold: 0.5725
+- Predicted fraud flag: 1
+- Suggested risk level from model score: High
+
+Transaction context:
+- transaction_id: TXN0147132
+- customer_id: CUST012437
+- product_id: PROD00526
+- order_date: 2023-12-29
+- order_value: 52.12
+- discount_applied: 48.00%
+- discounted_order_value: 27.10
+- discount_amount: 25.02
+- payment_method: Crypto
+- device_type: Desktop
+
+Product and behavioral context for analyst review:
+- category: Sports
+- price: 100.24
+- margin_percentage: 5.83%
+- popularity_score: 64.20
+- loyalty_score: 8.96
+- avg_session_time: 7.06
+- pages_per_session: 3
+- cart_abandon_rate: 21.00%
+- return_rate: 20.00%
+- support_tickets: 6
+- review_score: 3.80
+
+Prior-history context:
+- prior_customer_transaction_count: 9
+- prior_customer_avg_order_value: 387.07
+- days_since_last_order: 243.00
+- prior_product_transaction_count: 78
+- prior_product_avg_order_value: 71.77
+
+Important instructions:
+- Do not use protected or demographic attributes as risk justifications.
+- Do not mention the true fraud label, even if it exists in the dataset.
+- Focus on transaction-level, payment, discount, product, and behavioral risk signals.
+- Include alternative benign explanations where appropriate.
+- Recommend analyst review actions, not automatic rejection.
+
+Output format:
+1. Risk level: Low / Medium / High
+2. Main risk signals
+3. Alternative benign explanations
+4. Recommended analyst action
+5. One-sentence business summary

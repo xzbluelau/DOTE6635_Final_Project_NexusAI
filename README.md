@@ -1,13 +1,17 @@
-# Fraud Detection with 1D-CNN: A Replication and Extension Study
+# DOTE6635_Final_Project_NexusAI
+
+The broader project consists of two complementary studies on AI-based fraud detection in digital commerce. Study 1 evaluates whether integrating transaction, customer, product, behavioral, and prior history data improves fraud detection relative to a transaction-only baseline, while Study 2 focuses on model architecture innovation–examining whether we can improve fraud detection model performance by integrating a state-of-the-art architecture of neural networks. Together, the studies extend prior work by situating fraud detection within a broader business intelligence and decision support framework. This design allows the project to consider not only predictive performance, but also how model outputs can support interpretation, risk prioritization, and analyst judgment in operational fraud management. Accordingly, Study 1 answers: Can integrating multi-source business data improve AI-based fraud detection in e-commerce platforms? Additionally, Study 2 answers: Can we improve fraud detection model performance by tuning the architecture of deep neural networks, specifically, integrating attention mechanisms with 1D-CNNs (Zhang et al., 2021)?
+
+## Study 2: Fraud Detection with 1D-CNN — A Replication and Extension
 
 > **Course**: DOTE6635 AI for Business — Final Project
 > **Team**: NexusAI
 
-## Research Question
+### Research Question
 
 Can a deep residual 1D-CNN with self-attention, originally designed for metaverse transaction risk classification (Mohammed et al., 2026), improve fraud detection performance on enterprise e-commerce data?
 
-## Key Results
+### Key Results
 
 | Model | F1 | Recall | AUC-ROC | AUC-PR |
 |-------|----|--------|---------|--------|
@@ -20,7 +24,7 @@ Can a deep residual 1D-CNN with self-attention, originally designed for metavers
 - **1D-CNN achieves the highest recall (41.2%)** — catches the most fraud cases
 - **1D-CNN achieves the highest AUC-PR (0.0704)** — best precision-recall tradeoff
 
-## Project Structure
+### Project Structure
 
 ```
 fraud-detection-1dcnn/
@@ -53,7 +57,7 @@ fraud-detection-1dcnn/
     └── logs/                     # Training log
 ```
 
-## How to Run
+### How to Run
 
 ```bash
 # 1. Install dependencies
@@ -74,21 +78,21 @@ python code/05_train_evaluate.py  # Train 1D-CNN + compare all models
 python code/06_visualization.py   # Generate all figures
 ```
 
-## Methodology
+### Methodology
 
 - **Architecture**: 1D-CNN with true residual connections (projection shortcuts) + SE-style self-attention, 44K parameters
 - **Data**: Enterprise E-Commerce Intelligence (Kaggle) — 150K transactions, 4 tables joined (transactions, customers, products, behavior), 46 features
 - **Preprocessing**: SMOTE oversampling on training set only, StandardScaler fit on train only, threshold optimization on validation set
 - **Baselines**: Logistic Regression, Random Forest, XGBoost, 2-layer MLP
 
-## Key Findings
+### Key Findings
 
 1. The 1D-CNN **does not clearly outperform** simpler baselines on F1 score
 2. The 1D-CNN achieves the **highest recall** (41.2%) — most effective at catching actual fraud
 3. All models show modest absolute performance (AUC-ROC ~0.63) due to weak discriminative signal in the synthetic dataset
 4. Threshold optimization is **essential** — at default threshold 0.5, all models predict zero fraud
 
-## References
+### References
 
 - Mohammed, K. et al. (2026). A deep residual 1D-CNN with self-attention for fraud transaction detection in virtual economies.
 - He, K. et al. (2016). Deep Residual Learning for Image Recognition (ResNet).
